@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counting down to Poushika’s Special day</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Sacramento&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#f5a8c8;
+  --deep:#6b0038;
+  --dark:#1f1f1f;
+}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-color: var(--pink);
+  background: url("./images/main_index.png") center/cover no-repeat fixed;
+  font-family:Poppins,system-ui;
+  text-align:center;
+}
+
+
+.wrapper{
+  width:100%;
+  max-width:980px;
+  padding:24px;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(30px,4vw,54px);
+  color:#fff;
+  font-weight:600;
+}
+.name{color:var(--deep);font-weight:800}
+.subtitle{
+  font-size:clamp(22px,3vw,44px);
+  font-weight:700;
+}
+
+.tagline{
+  font-family:Sacramento,cursive;
+  font-size:30px;
+  color:#0006;
+  margin:18px 0 28px;
+}
+
+.timer{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin-bottom:22px;
+}
+
+.box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.digit{
+  width:90px;
+  height:72px;
+  background:var(--dark);
+  color:#fff;
+  font-size:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+}
+
+.label{
+  font-family:Sacramento,cursive;
+  font-size:22px;
+  color:#fff;
+}
+
+.colon{
+  font-size:44px;
+  color:#fff7;
+  margin-top:-10px;
+}
+
+.mid{
+  font-weight:700;
+  color:var(--deep);
+  font-size:24px;
+}
+.sub{
+  color:#0005;
+  font-size:20px;
+  margin-bottom:28px;
+}
+
+.cta-wrap{
+  position:relative;
+  display:inline-block;
+}
+
+/* Button base (same look) */
+.cta{
+  padding:14px 36px;
+  border-radius:999px;
+  background:#fff;
+  color:#000;
+  font-size:20px;
+  text-decoration:none;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.cta:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(0,0,0,.16);
+}
+
+/* ✅ Disabled state (before midnight) */
+.cta.disabled{
+  opacity: .65;
+  cursor: not-allowed;
+  pointer-events: auto; /* keep hover possible for tooltip */
+  transform: none !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+
+.tooltip{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%) translateY(6px);
+  bottom:100%;
+  margin-bottom:10px;
+  background:rgba(255,255,255,.92);
+  color:#6b0038;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:13px;
+  white-space:nowrap;
+  box-shadow:0 10px 26px rgba(0,0,0,.15);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+
+/* Tooltip only when wrapper has .waiting */
+.cta-wrap.waiting:hover .tooltip{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* Midnight glow animation (added ONLY at 00:00) */
+.cta.glow{
+  animation: glowPulse 1.6s ease-in-out infinite;
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.16),
+    0 0 0 2px rgba(255,255,255,.75),
+    0 0 22px rgba(255, 215, 0, .45),
+    0 0 38px rgba(255, 45, 85, .28);
+  filter: saturate(1.05);
+}
+
+@keyframes glowPulse{
+  0%,100%{ transform: translateY(0) scale(1); }
+  50%{ transform: translateY(-2px) scale(1.02); }
+}
+
+/* Tip under button (cool subtle) */
+.tip{
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(0,0,0,.50);
+}
+.tip span{ font-weight: 700; }
+
+/* Audio gate */
+.gate{
+  position:fixed;
+  inset:0;
+  background:#0004;
+  backdrop-filter:blur(6px);
+  display:grid;
+  place-items:center;
+  z-index:9999;
+}
+.gateCard{
+  background:#fff9;
+  padding:24px;
+  border-radius:22px;
+  width:min(420px,90%);
+}
+</style>
+</head>
+
+<body>
+
+<!-- PC NOTE GATE (shows first) -->
+<div class="gate" id="pcGate">
+  <div class="gateCard">
+    <h3>💻 One small request…</h3>
+    <p>"<b>PC</b> pe kholna. Phone pe nahi. I’m watching 👀💗”. <b>No phones allowed</b> 😤💗</p>
+    <button class="cta" id="pcOk">Okay</button>
+  </div>
+</div>
+
+<!-- AUDIO UNLOCK (permission only) -->
+<div class="gate" id="gate" style="display:none;">
+  <div class="gateCard">
+    <h3>🎧 One tiny thing…</h3>
+    <p>Tap once so music plays exactly at midnight ✨</p>
+    <button class="cta" id="unlock">Tap to Start</button>
+  </div>
+</div>
+
+<!-- Music -->
+<audio id="music" preload="auto" loop>
+  <source src="song\Lover.mp3" type="audio/mpeg">
+</audio>
+
+<div class="wrapper">
+  <h1>Counting down to <span class="name">Poushika’s</span><br>
+    <span class="subtitle">Special day 🎂</span>
+  </h1>
+
+  <div class="tagline">You mean more to me than words can ever explain 🍓</div>
+
+  <div class="timer">
+    <div class="box"><div class="digit" id="d">00</div><div class="label">days</div></div>
+    <div class="colon">:</div>
+    <div class="box"><div class="digit" id="h">00</div><div class="label">hours</div></div>
+    <div class="colon">:</div>
+    <div class="box"><div class="digit" id="m">00</div><div class="label">minutes</div></div>
+    <div class="colon">:</div>
+    <div class="box"><div class="digit" id="s">00</div><div class="label">seconds</div></div>
+  </div>
+
+  <div class="mid">✨ A special celebration awaits you at midnight ...... ✨</div>
+  <br>
+  <div class="sub">something magical is about to happen..... 🥺</div>
+
+  <!-- Button + tooltip -->
+  <div class="cta-wrap waiting" id="ctaWrap">
+    <div class="tooltip">🥹 thora toh patience rakh na, please 🥹</div>
+    <!-- ✅ starts disabled -->
+    <a class="cta disabled" id="celebrate" href="celebrate.html" aria-disabled="true">🎉 Let’s Celebrate</a>
+  </div>
+
+  <div class="tip"><span>Tip:</span> Open this link on 2nd Jan at 12:00 AM 😊</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script>
+/* TARGET: 2 Jan 2026 00:00 IST */
+// const target = new Date("2026-01-01T18:30:00Z");
+const target = new Date(Date.now() + 10000);
+
+/* Elements */
+const $ = (id) => document.getElementById(id);
+const music = $("music");
+const gate = $("gate");
+const unlockBtn = $("unlock");
+const celebrateBtn = $("celebrate");
+const ctaWrap = $("ctaWrap");
+const pcGate = $("pcGate");
+const pcOk = $("pcOk");
+
+// show PC gate first, then audio gate
+pcOk.onclick = () => {
+  pcGate.style.display = "none";
+  gate.style.display = "grid"; // show audio unlock gate
+};
+
+
+/* States */
+let audioReady = false;
+let fired = false;
+let unlockedCelebrate = false; // ✅ new: controls click
+
+/* Unlock audio permission ONLY (no music now) */
+unlockBtn.onclick = async () => {
+  gate.style.display = "none";
+  try{
+    music.volume = 0;
+    await music.play();
+    music.pause();
+    music.currentTime = 0;
+    audioReady = true;
+  }catch(e){
+    audioReady = false;
+  }
+};
+
+/* Prevent navigation before midnight */
+celebrateBtn.addEventListener("click", (e) => {
+  if (!unlockedCelebrate) {
+    e.preventDefault(); // block navigation
+  }
+});
+
+/* Music plays ONLY at midnight */
+function playMusicAtMidnight(){
+  if(!audioReady) return;
+  try{
+    music.currentTime = 0;
+    music.volume = 0;
+    music.play();
+
+    let v = 0;
+    const fade = setInterval(() => {
+      v += 0.04;
+      music.volume = Math.min(v, 1);
+      if(v >= 1) clearInterval(fade);
+    }, 60);
+  }catch(e){}
+}
+
+/* ===== Confetti: FULL SCREEN RAIN ===== */
+
+const confettiCanvas = document.createElement("canvas");
+confettiCanvas.style.position = "fixed";
+confettiCanvas.style.inset = "0";
+confettiCanvas.style.width = "100%";
+confettiCanvas.style.height = "100%";
+confettiCanvas.style.pointerEvents = "none";
+confettiCanvas.style.zIndex = "9998";
+document.body.appendChild(confettiCanvas);
+
+const myConfetti = confetti.create(confettiCanvas, {
+  resize: true,
+  useWorker: true
+});
+
+const heartShape = confetti.shapeFromText({ text: "❤", scalar: 1.2 });
+
+let confettiInterval = null;
+
+function startConfetti() {
+  if (confettiInterval) return;
+
+  confettiInterval = setInterval(() => {
+    for (let i = 0; i < 18; i++) {
+      const x = Math.random();
+
+      myConfetti({
+        particleCount: 1,
+        startVelocity: 2.8,
+        spread: 18,
+        angle: 90,
+        gravity: 1.05,
+        ticks: 900,
+        scalar: 1.0,
+        shapes: [heartShape],
+        colors: ["#ff2d55", "#ff4d6d", "#ff7aa2", "#ffb3c6"],
+        origin: { x, y: -0.12 }
+      });
+
+      myConfetti({
+        particleCount: 3,
+        startVelocity: 1.8,
+        spread: 22,
+        angle: 90,
+        gravity: 1.25,
+        ticks: 900,
+        scalar: 0.55,
+        colors: ["#FFD700", "#FFC300", "#FFDF80", "#FFF2B2", "#FFE066"],
+        origin: { x: x + (Math.random() * 0.02 - 0.01), y: -0.14 }
+      });
+    }
+  }, 90);
+}
+
+function stopConfetti() {
+  clearInterval(confettiInterval);
+  confettiInterval = null;
+  myConfetti.reset();
+}
+
+/* Stop confetti on CTA click (before navigation) */
+celebrateBtn.addEventListener("click", () => {
+  if (unlockedCelebrate) stopConfetti();
+});
+
+/* Countdown */
+function tick(){
+  const diff = target - new Date();
+
+  if(diff <= 0){
+    $("d").textContent = "00";
+    $("h").textContent = "00";
+    $("m").textContent = "00";
+    $("s").textContent = "00";
+
+    if(!fired){
+      fired = true;
+
+      // ✅ enable button at midnight
+      unlockedCelebrate = true;
+      celebrateBtn.classList.remove("disabled");
+      celebrateBtn.removeAttribute("aria-disabled");
+
+      // ✅ disable tooltip usage after midnight
+      ctaWrap.classList.remove("waiting");
+
+      // ✅ Button glow at midnight
+      celebrateBtn.classList.add("glow");
+
+      // Confetti + Music
+      startConfetti();
+      playMusicAtMidnight();
+      localStorage.setItem("birthdayMusic", "play");
+    }
+    return;
+  }
+
+  const t = Math.floor(diff/1000);
+  $("d").textContent = String(Math.floor(t/86400)).padStart(2,"0");
+  $("h").textContent = String(Math.floor((t%86400)/3600)).padStart(2,"0");
+  $("m").textContent = String(Math.floor((t%3600)/60)).padStart(2,"0");
+  $("s").textContent = String(t%60).padStart(2,"0");
+}
+
+tick();
+setInterval(tick, 1000);
+</script>
+
+</body>
+</html>

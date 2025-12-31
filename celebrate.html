@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Cutie 💖</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink:#f5a8c8;
+    }
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:Poppins,system-ui;
+      text-align:center;
+
+      background-color: var(--pink);
+      background-image: url("./images/main_index.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+
+      overflow:hidden;
+    }
+
+    /* subtle dim */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(245,168,200,0.10);
+      z-index:0;
+      pointer-events:none;
+    }
+
+    /* 🎈 Balloons layer (below banner, above overlay) */
+    .balloons{
+      position:fixed;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .balloon{
+      position:absolute;
+      bottom:-160px;
+      width:60px;
+      height:80px;
+      border-radius: 50% 50% 48% 48%;
+      opacity:.85;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+      animation: floatUp linear infinite;
+    }
+
+    /* balloon knot */
+    .balloon::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-10px;
+      width:10px;
+      height:10px;
+      background: inherit;
+      border-radius: 2px;
+      rotate: 45deg;
+      opacity:.9;
+    }
+
+    /* string */
+    .balloon::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-95px;
+      width:2px;
+      height:90px;
+      background: rgba(255,255,255,.55);
+      border-radius:999px;
+    }
+
+    @keyframes floatUp{
+      0%{
+        transform: translateY(0) translateX(0);
+      }
+      50%{
+        transform: translateY(-55vh) translateX(10px);
+      }
+      100%{
+        transform: translateY(-120vh) translateX(-10px);
+      }
+    }
+
+    .wrap{
+      width:min(1000px, 92vw);
+      position:relative;
+      z-index:2; /* banner above balloons */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+      transform: translateY(-120px);
+      gap: 40px;
+    }
+
+    .banner{
+      width:100%;
+      max-width: 980px;
+      height:auto;
+      border-radius: 18px;
+      box-shadow:
+        0 22px 55px rgba(0,0,0,0.25),
+        0 8px 20px rgba(0,0,0,0.12);
+
+      transform: translateY(-40px);
+      opacity: 0;
+      animation: slideDown 1.05s cubic-bezier(.16,.84,.24,1) forwards;
+    }
+
+    @keyframes slideDown{
+      0%{ transform: translateY(-70px); opacity: 0; }
+      60%{ transform: translateY(6px); opacity: 1; }
+      100%{ transform: translateY(0); opacity: 1; }
+    }
+
+    /* ✅ Continue button */
+    .continue{
+      padding: 12px 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.75);
+      background: rgba(255,255,255,.92);
+      color:#111;
+      text-decoration:none;
+      font-weight: 600;
+      font-size: 18px;
+      box-shadow: 0 12px 80px rgba(0,0,0,.12);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      opacity:0;
+      transform: translateY(8px);
+      animation: btnIn .6s ease forwards;
+      animation-delay: 1.15s; /* after banner slide */
+    }
+    .continue:hover{
+      transform: translateY(6px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.16);
+      filter: saturate(1.05);
+    }
+
+    /* Midnight glow animation (added ONLY at 00:00) */
+    .cta.glow{
+        animation: glowPulse 1.6s ease-in-out infinite;
+        box-shadow:
+            0 18px 40px rgba(0,0,0,.16),
+            0 0 0 2px rgba(255,255,255,.75),
+            0 0 22px rgba(255, 215, 0, .45),
+            0 0 38px rgba(255, 45, 85, .28);
+        filter: saturate(1.05);
+    }
+
+    @keyframes btnIn{
+      to{
+        opacity:1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width:600px){
+      .wrap{ padding: 16px; }
+      .banner{ border-radius: 14px; }
+      .balloon{ width:46px; height:62px; }
+      .continue{ font-size:16px; padding: 11px 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <!-- 🎈 Balloons -->
+  <div class="balloons" aria-hidden="true">
+    <div class="balloon" style="left:6%;  background:#ff7aa2; animation-duration: 12s; animation-delay: -2s;"></div>
+    <div class="balloon" style="left:18%; background:#ffd166; animation-duration: 14s; animation-delay: -6s;"></div>
+    <div class="balloon" style="left:30%; background:#8ecae6; animation-duration: 13s; animation-delay: -4s;"></div>
+    <div class="balloon" style="left:44%; background:#bdb2ff; animation-duration: 15s; animation-delay: -9s;"></div>
+    <div class="balloon" style="left:58%; background:#ffadad; animation-duration: 12.5s; animation-delay: -7s;"></div>
+    <div class="balloon" style="left:72%; background:#caffbf; animation-duration: 16s; animation-delay: -11s;"></div>
+    <div class="balloon" style="left:86%; background:#ffc6ff; animation-duration: 13.5s; animation-delay: -5s;"></div>
+
+    <!-- extra smaller ones -->
+    <div class="balloon" style="left:12%; background:#ffe066; width:44px; height:60px; opacity:.7; animation-duration: 18s; animation-delay: -10s;"></div>
+    <div class="balloon" style="left:66%; background:#90dbf4; width:44px; height:60px; opacity:.7; animation-duration: 17s; animation-delay: -12s;"></div>
+  </div>
+
+  <div class="wrap">
+    <img
+      class="banner"
+      src="./images/celebrate_index.png"
+      alt="Happy Birthday Cutie"
+      draggable="false"
+    />
+
+    <!-- ✅ Continue button -->
+    <a class="continue" href="slide.html">Continue →</a>
+  </div>
+
+  <!-- Confetti burst -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script>
+    setTimeout(() => {
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }, 600);
+  </script>
+
+  <!-- Music -->
+  <audio id="music" preload="auto" loop>
+    <source src="song\Love_Story.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const music = document.getElementById("music");
+
+    if (localStorage.getItem("birthdayMusic") === "play") {
+      (async () => {
+        try {
+          music.volume = 0;
+          await music.play();
+
+          let v = 0;
+          const fade = setInterval(() => {
+            v += 0.04;
+            music.volume = Math.min(v, 1);
+            if (v >= 1) clearInterval(fade);
+          }, 60);
+        } catch (e) {
+          const resume = async () => {
+            try { await music.play(); } catch {}
+          };
+          document.addEventListener("click", resume, { once: true });
+        }
+      })();
+    }
+  </script>
+
+</body>
+</html>

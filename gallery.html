@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memories 💞</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink:#f5a8c8;
+      --deep:#6b0038;
+      --cardRadius: 18px;
+    }
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Poppins,system-ui;
+      background-color: var(--pink);
+      background-image: url("./images/main_index.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow-x:hidden;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(245,168,200,0.10);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      width:min(1200px, 94vw);
+      margin: 34px auto 60px;
+      padding: 10px 10px 40px;
+    }
+
+    .title{
+      text-align:center;
+      font-size: clamp(34px, 4.2vw, 54px);
+      font-weight: 800;
+      color: rgba(90, 10, 55, 0.65);
+      letter-spacing: .5px;
+      margin: 10px 0 26px;
+      text-shadow: 0 12px 22px rgba(0,0,0,.10);
+      user-select:none;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 22px;
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio: 1/1;
+      perspective: 1000px;
+    }
+
+    .cardInner{
+      position:relative;
+      width:100%;
+      height:100%;
+      transform-style: preserve-3d;
+      transition: transform .75s cubic-bezier(.2,.85,.2,1);
+      cursor:pointer;
+    }
+
+    .card.revealed .cardInner{
+      transform: rotateY(180deg);
+      cursor:default;
+    }
+
+    .face{
+      position:absolute;
+      inset:0;
+      border-radius: var(--cardRadius);
+      backface-visibility:hidden;
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+    }
+
+    .front{
+      background: rgba(255,255,255,0.28);
+      border: 2px solid rgba(255,255,255,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .tap{
+      background: rgba(255,255,255,0.78);
+      color: rgba(90,10,55,.75);
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      border: 1px solid rgba(255,255,255,.65);
+    }
+
+    .card:not(.revealed) .cardInner:hover{
+      transform: translateY(-2px) rotateX(2deg);
+    }
+
+    .back{
+      transform: rotateY(180deg);
+      background:#fff;
+    }
+
+    .back img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+    }
+
+    .footer-note{
+      margin-top: 26px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(0,0,0,.55);
+      letter-spacing: .2px;
+      text-shadow: 0 8px 18px rgba(0,0,0,.08);
+      user-select: none;
+    }
+
+    .continue-btn{
+      margin: 18px auto 0;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 12px 34px;
+      border-radius: 999px;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration:none;
+      box-shadow: 0 14px 30px rgba(0,0,0,.18);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .continue-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(0,0,0,.22);
+    }
+
+    @media (max-width:1100px){
+      .grid{ grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width:720px){
+      .grid{ grid-template-columns: repeat(3, 1fr); gap:16px; }
+    }
+    @media (max-width:430px){
+      .grid{ grid-template-columns: repeat(2, 1fr); gap:14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <div class="container">
+    <div class="title">👫 Memories 👫</div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="footer-note">
+      explore more time to time....... 😊
+    </div>
+
+    <div style="text-align:center;">
+      <a href="mymesage.html" class="continue-btn">Continue</a>
+    </div>
+  </div>
+
+  <!-- 🎵 Background music for Gallery (replace the src with your new gallery song) -->
+  <audio id="music" preload="auto" loop>
+    <!-- Example: <source src="song/gallery.mp3" type="audio/mpeg"> -->
+    <source src="song\dekho.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 🔊 Tiny flip sound (put a short pop/flip mp3 here) -->
+  <audio id="flipSound" preload="auto">
+    <!-- Example: <source src="sound/flip.mp3" type="audio/mpeg"> -->
+    <source src="song\switch.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    /* =========================
+       GALLERY FLIP LOGIC + SFX
+       ========================= */
+
+    const photos = [
+      "./gallery/1.jpg","./gallery/2.jpg","./gallery/3.jpg","./gallery/4.jpg",
+      "./gallery/5.jpg","./gallery/6.jpg","./gallery/7.jpg","./gallery/8.jpg",
+      "./gallery/9.jpg","./gallery/10.jpg","./gallery/11.jpg","./gallery/12.jpg",
+      "./gallery/13.jpg","./gallery/14.jpg","./gallery/15.jpg","./gallery/16.jpg",
+      "./gallery/17.jpg","./gallery/18.jpg","./gallery/19.jpg","./gallery/20.jpg",
+      "./gallery/21.jpg","./gallery/22.jpg","./gallery/23.jpg","./gallery/24.jpg",
+      "./gallery/25.jpg","./gallery/26.jpg","./gallery/27.jpg","./gallery/28.jpg",
+      "./gallery/29.jpg","./gallery/30.jpg","./gallery/31.jpg","./gallery/32.jpg",
+      "./gallery/33.jpg","./gallery/34.jpg","./gallery/35.jpg","./gallery/36.jpg",
+      "./gallery/37.jpg","./gallery/38.jpg", "./gallery/39.jpg","./gallery/40.jpg",
+      "./gallery/41.jpg","./gallery/42.jpg"
+    ];
+
+    const grid = document.getElementById("grid");
+    const flipSound = document.getElementById("flipSound");
+
+    photos.forEach((src, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="cardInner" role="button" aria-label="Reveal memory ${i+1}" tabindex="0">
+          <div class="face front">
+            <div class="tap">Tap to Reveal</div>
+          </div>
+          <div class="face back">
+            <img src="${src}" alt="Memory ${i+1}">
+          </div>
+        </div>
+      `;
+
+      const inner = card.querySelector(".cardInner");
+
+      const reveal = () => {
+        if (card.classList.contains("revealed")) return;
+
+        // tiny flip sound (plays on first reveal only)
+        if (flipSound) {
+          try{
+            flipSound.currentTime = 0;
+            flipSound.volume = 0.35; // subtle
+            flipSound.play().catch(()=>{});
+          }catch(e){}
+        }
+
+        card.classList.add("revealed");
+      };
+
+      inner.addEventListener("click", reveal);
+
+      inner.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          reveal();
+        }
+      });
+
+      grid.appendChild(card);
+    });
+
+    /* =========================
+       GALLERY MUSIC (NEW SONG)
+       ========================= */
+
+    const music = document.getElementById("music");
+
+    // Continue music if it was started earlier (birthdayMusic flag)
+    if (localStorage.getItem("birthdayMusic") === "play" && music) {
+      // ensure the new gallery song is loaded
+      try { music.load(); } catch(e) {}
+
+      (async () => {
+        try {
+          music.currentTime = 0;
+          music.volume = 0;
+          await music.play();
+
+          // smooth fade-in
+          let v = 0;
+          const fade = setInterval(() => {
+            v += 0.04;
+            music.volume = Math.min(v, 1);
+            if (v >= 1) clearInterval(fade);
+          }, 60);
+
+        } catch (e) {
+          // fallback: resume on first user interaction
+          const resume = async () => {
+            try { await music.play(); } catch {}
+            document.removeEventListener("click", resume);
+          };
+          document.addEventListener("click", resume, { once: true });
+        }
+      })();
+    }
+  </script>
+</body>
+</html>
